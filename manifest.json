@@ -1,11 +1,11 @@
 {
     "name": "Lab8_Starter_Fork",
     "short_name": "Arlene",
-    "description": "",
-    "start_url": "/",
+    "description": "Lab 8 App",
+    "start_url": "/index.html",
     "display": "standalone",
-    "background_color": "white",
-    "theme_color": "black",
+    "background_color": "#ffffff",
+    "theme_color": "#000000",
     "icons": [
       {
         "src": "/assets/images/icons/icon-192x192.png",
