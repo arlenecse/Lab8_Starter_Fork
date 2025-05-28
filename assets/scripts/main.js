@@ -48,40 +48,37 @@ function initializeServiceWorker() {
 
   const registerServiceWorker = async () => {
     if("serviceWorker" in navigator){
+  // B2. TODO - Listen for the 'load' event on the window object.
       	window.addEventListener("load", async () => {
+  // Steps B3-B6 will be *inside* the event listener's function created in B2
+  // B3. TODO - Register './sw.js' as a service worker (The MDN article
+  //            "Using Service Workers" will help you here)
 			try{
 				const registration = await navigator.serviceWorker.register('sw.js', {
 				scope: './',
+  // B4. TODO - Once the service worker has been successfully registered, console
+  //            log that it was successful.
+  // code from docs to see if service worker is working
 			});
 				if (registration.installing) {
 					console.log("Service worker installing");
 				} else if (registration.waiting) {
 					console.log("Service worker installed");
 				} else if (registration.active) {
-					console.log("Service worker active");
+					console.log("Service worker successfully activated");
 				}
+  // B5. TODO - In the event that the service worker registration fails, console
+  //            log that it has failed.
 			} catch (error) {
 				console.error(`Registration failed with ${error}`);
 			}
-		});
-	} else {
-		console.warn("Service workers not supported");
+		})
 	}
-	};
+  }
 
 	registerServiceWorker();
 }
-  // B2. TODO - Listen for the 'load' event on the window object.
-
-  // Steps B3-B6 will be *inside* the event listener's function created in B2
-  // B3. TODO - Register './sw.js' as a service worker (The MDN article
-  //            "Using Service Workers" will help you here)
-  // B4. TODO - Once the service worker has been successfully registered, console
-  //            log that it was successful.
-  // B5. TODO - In the event that the service worker registration fails, console
-  //            log that it has failed.
   // STEPS B6 ONWARDS WILL BE IN /sw.js
-
 
 /**
  * Reads 'recipes' from localStorage and returns an array of
@@ -109,39 +106,37 @@ async function getRecipes() {
   //            take two parameters - resolve, and reject. These are functions
   //            you can call to either resolve the Promise or Reject it.
   /**************************/
+      return new Promise(async (resolve, reject) => {
     // A4-A11 will all be *inside* the callback function we passed to the Promise
   // we're returning
   /**************************/
-
-  // A5. TODO - Since we are going to be dealing with asynchronous code, create
+    // A5. TODO - Since we are going to be dealing with asynchronous code, create
   //            a try / catch block. A6-A9 will be in the try portion, A10-A11
   //            will be in the catch portion.
+      try {
+        for(let i = 0; i < RECIPE_URLS.length; i++){
   // A6. TODO - For each URL in that array, fetch the URL - MDN also has a great
   //            article on fetch(). NOTE: Fetches are ASYNCHRONOUS, meaning that
   //            you must either use "await fetch(...)" or "fetch.then(...)". This
   //            function is using the async keyword so we recommend "await"
+          const url = await fetch(RECIPE_URLS[i]);
   // A7. TODO - For each fetch response, retrieve the JSON from it using .json().
   //            NOTE: .json() is ALSO asynchronous, so you will need to use
   //            "await" again
+          const recipe = await url.json();
   // A8. TODO - Add the new recipe to the recipes array
+          recipes.push(recipe);
+      }
   // A9. TODO - Check to see if you have finished retrieving all of the recipes,
   //            if you have, then save the recipes to storage using the function
   //            we have provided. Then, pass the recipes array to the Promise's
   //            resolve() method.
-  // A10. TODO - Log any errors from catch using console.error
-  // A11. TODO - Pass any errors to the Promise's reject() function
-    return new Promise(async (resolve, reject) => {
-      try {
-        for(let i = 0; i < RECIPE_URLS.length; i++){
-          const url = await fetch(RECIPE_URLS[i]);
-          const recipe = await url.json();
-          recipes.push(recipe);
-      }
-
       saveRecipesToStorage(recipes);
       resolve(recipes);
     } catch (error) {
+  // A10. TODO - Log any errors from catch using console.error
       console.error("Error fetching recipes", error);
+  // A11. TODO - Pass any errors to the Promise's reject() function
       reject(error);
     }
     });
